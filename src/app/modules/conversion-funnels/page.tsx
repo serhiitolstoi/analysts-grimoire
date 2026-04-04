@@ -63,19 +63,83 @@ export default function ConversionFunnelsPage() {
                 height={280}
               />
             </TerminalCard>
-            <TerminalCard title="Methodology" accent="none">
-              <div className="text-[11px] text-g-muted space-y-2">
+
+            <TerminalCard title="Case Study: Activation Latency" accent="tan">
+              <div className="text-[11px] text-g-muted space-y-2 leading-relaxed">
                 <p>
-                  <span className="text-g-tan font-bold">Box plot interpretation:</span>{" "}
-                  Center line = median (p50). Box = IQR (p25–p75). Right whisker = p90.
+                  You&apos;re looking at a Claude-like AI product with a four-step activation funnel:
+                  <span className="text-g-tan font-bold"> Signup → First Message → First Artifact → First Code Run</span>.
+                  Each step represents deeper engagement — from passive interest to active creation.
                 </p>
                 <p>
-                  The <span className="text-g-tan">signup → first message</span> step shows
-                  time-to-activation — a key leading indicator of 30-day retention.
+                  Most analytics tools show <em>conversion rates</em> (what % of users pass each step).
+                  But that hides a critical dimension: <span className="text-g-text font-bold">how long does each step take?</span>{" "}
+                  A funnel with 80% conversion but 72-hour median time-to-activation is fundamentally different
+                  from one that converts in 15 minutes.
                 </p>
                 <p className="text-g-dim">
-                  Adjust <span className="text-g-tan">Onboarding Friction</span> slider to see
-                  how barrier changes the latency distribution.
+                  <span className="text-g-tan">Real-world parallel:</span> Slack famously tracked &quot;time to 2,000 messages sent&quot;
+                  as their activation metric. Teams that hit it within the first week had 93% retention
+                  vs. 10% for those that didn&apos;t. The <em>speed</em> of activation predicts retention better than activation itself.
+                </p>
+              </div>
+            </TerminalCard>
+
+            <TerminalCard title="Reading the Box Plots" accent="none">
+              <div className="text-[11px] text-g-muted space-y-2 leading-relaxed">
+                <p>
+                  <span className="text-g-tan font-bold">Center line</span> = median (p50) — half of users complete this step faster, half slower.
+                  <span className="text-g-tan font-bold"> Box edges</span> = p25 and p75 (the interquartile range).
+                  <span className="text-g-tan font-bold"> Right whisker</span> = p90 — the &quot;long tail&quot; users who get stuck.
+                </p>
+                <p>
+                  The <span className="text-g-text font-bold">p90 whisker</span> is the most actionable metric.
+                  If p50 is 2 hours but p90 is 48 hours, you have a bimodal population: most users activate
+                  quickly, but a significant minority hits a wall. That&apos;s where your onboarding investment should go.
+                </p>
+                <p>
+                  Watch the <span className="text-g-tan font-bold">gap between steps</span>: if
+                  signup → first message is fast (low friction) but first message → first artifact is
+                  slow (high friction), users understand the product but struggle with the creation flow.
+                </p>
+              </div>
+            </TerminalCard>
+
+            <TerminalCard title="What to Look For" accent="none">
+              <div className="text-[11px] text-g-muted space-y-1.5 leading-relaxed">
+                <p>
+                  <span className="text-g-tan">1.</span> Which step has the widest IQR box?
+                  That&apos;s your highest-variance step — some users breeze through, others struggle.
+                </p>
+                <p>
+                  <span className="text-g-tan">2.</span> Is the p90 whisker disproportionately long
+                  on any step? That signals a &quot;cliff&quot; — a subpopulation that may never convert.
+                </p>
+                <p>
+                  <span className="text-g-tan">3.</span> Do later steps have <em>shorter</em> latency than earlier ones?
+                  That means the hard part is getting started — once users are in, they accelerate.
+                  This is the &quot;activation energy&quot; pattern.
+                </p>
+              </div>
+            </TerminalCard>
+
+            <TerminalCard title="Try This" accent="none">
+              <div className="text-[11px] text-g-dim space-y-1.5 leading-relaxed">
+                <p>
+                  <span className="text-g-tan font-bold">Experiment 1:</span> Set{" "}
+                  <span className="text-g-red">Onboarding Friction</span> to maximum (1.0).
+                  Watch the p90 whisker explode on the first step. This simulates what happens when
+                  you add a mandatory phone verification or credit card requirement.
+                </p>
+                <p>
+                  <span className="text-g-tan font-bold">Experiment 2:</span> Set friction to minimum (0.0)
+                  and <span className="text-g-purple">Model Quality</span> to minimum (0.0).
+                  Now the first step is easy but later steps slow down — users get in but don&apos;t find enough value
+                  to progress through the funnel.
+                </p>
+                <p>
+                  <span className="text-g-tan font-bold">SQL challenge:</span> Modify the query to add a
+                  WHERE clause filtering by plan type. Do Pro users have faster activation than Free users?
                 </p>
               </div>
             </TerminalCard>

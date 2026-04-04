@@ -67,21 +67,89 @@ export default function IATDistributionPage() {
                 height={360}
               />
             </TerminalCard>
-            <TerminalCard title="Hidden Signal" accent="purple">
-              <div className="text-[11px] text-g-muted space-y-2">
+
+            <TerminalCard title="Case Study: Measuring Habit Formation" accent="purple">
+              <div className="text-[11px] text-g-muted space-y-2 leading-relaxed">
                 <p>
-                  <span className="text-g-purple font-bold">Artifact users</span> (purple) have a{" "}
-                  <span className="text-g-text font-bold">40% shorter IAT</span> than regular users (tan).
-                  This manifests as a higher λ parameter — they return to the product more frequently.
+                  <span className="text-g-purple font-bold">Inter-Arrival Time (IAT)</span> is the time gap between
+                  consecutive sessions for the same user. If a user visits on Monday, then again on Wednesday,
+                  their IAT is 2 days. This metric directly measures <em>habit strength</em>.
                 </p>
                 <p>
-                  The exponential model f(t) = λe<sup>−λt</sup> fits session arrivals well when
-                  sessions are independent. Deviation from the fit (bimodal distribution) signals
-                  structured usage patterns like weekly work cycles.
+                  When session arrivals are independent (no habit, no schedule), IAT follows an
+                  <span className="text-g-text font-bold"> exponential distribution</span>: f(t) = λe<sup>−λt</sup>.
+                  The parameter <span className="text-g-purple font-bold">λ (lambda)</span> is the &quot;return rate&quot; — higher λ means
+                  users come back faster. A user with λ=0.5 returns every ~2 days on average; λ=1.0 returns daily.
                 </p>
                 <p className="text-g-dim">
-                  Adjust <span className="text-g-purple">Model Quality</span> slider —
-                  higher quality increases artifact creation → strengthens the IAT shift.
+                  <span className="text-g-purple">Real-world parallel:</span> Duolingo tracks &quot;streaks&quot; as their
+                  habit metric, but IAT is more fundamental — it captures the underlying return rate regardless
+                  of whether the user maintains a visible streak. Nir Eyal&apos;s &quot;Hook Model&quot; predicts that products
+                  which deliver variable rewards will show shorter IAT over time.
+                </p>
+              </div>
+            </TerminalCard>
+
+            <TerminalCard title="The Hidden Signal: Artifact Habit Loop" accent="purple">
+              <div className="text-[11px] text-g-muted space-y-2 leading-relaxed">
+                <p>
+                  <span className="text-g-purple font-bold">Artifact users</span> (purple histogram) have a{" "}
+                  <span className="text-g-text font-bold">40% shorter IAT</span> than regular users (tan histogram).
+                  This manifests as a visibly higher λ — the purple curve is steeper, meaning more probability mass
+                  is concentrated at short return intervals.
+                </p>
+                <p>
+                  <span className="text-g-text font-bold">Why does this happen?</span> Creating an artifact (a document,
+                  a piece of code, a summary) is the product&apos;s &quot;aha moment.&quot; It transforms the user from a
+                  <em> consumer</em> of AI responses into a <em>creator</em> who uses AI as a tool. This cognitive shift
+                  makes the product feel essential rather than optional, mechanically compressing return intervals.
+                </p>
+                <p>
+                  <span className="text-g-text font-bold">Business implication:</span> If λ shifts from 0.3 to 0.5,
+                  the user goes from returning every ~3.3 days to every ~2 days. Over a year, that&apos;s approximately
+                  <span className="text-g-purple font-bold"> 70 additional sessions per user</span>. At scale, accelerating
+                  artifact adoption by even 10% can drive massive engagement gains.
+                </p>
+              </div>
+            </TerminalCard>
+
+            <TerminalCard title="Reading the Distribution" accent="none">
+              <div className="text-[11px] text-g-muted space-y-2 leading-relaxed">
+                <p>
+                  <span className="text-g-purple font-bold">The dashed vertical lines</span> show mean IAT for each group.
+                  The gap between them is the habit effect — quantified, not just intuited.
+                </p>
+                <p>
+                  <span className="text-g-purple font-bold">The fitted curves</span> (solid lines) show the theoretical
+                  exponential distribution for each group&apos;s λ. Where the histogram deviates from the curve is
+                  interesting: a bump at 7 days suggests weekly usage patterns; a bump at 1 day suggests daily
+                  habit formation.
+                </p>
+                <p>
+                  <span className="text-g-purple font-bold">Heavy right tail</span> (IAT &gt; 10 days) represents users
+                  at churn risk — they haven&apos;t come back in over a week. The proportion of mass in the right tail
+                  is a leading indicator of upcoming churn.
+                </p>
+              </div>
+            </TerminalCard>
+
+            <TerminalCard title="Try This" accent="none">
+              <div className="text-[11px] text-g-dim space-y-1.5 leading-relaxed">
+                <p>
+                  <span className="text-g-purple font-bold">Experiment 1:</span> Toggle{" "}
+                  <span className="text-g-purple">Model Quality</span> from 1.0 to 0.2. Lower quality means fewer
+                  artifacts are created, which means fewer users enter the habit loop, which means the two
+                  distributions converge. This is Signal 4 (Quality Elasticity) in action.
+                </p>
+                <p>
+                  <span className="text-g-purple font-bold">Experiment 2:</span> Compare the λ values in the legend
+                  above the chart. Calculate the % difference: (λ_artifact - λ_regular) / λ_regular × 100.
+                  Is it close to 40%? That&apos;s the embedded signal strength.
+                </p>
+                <p>
+                  <span className="text-g-purple font-bold">SQL challenge:</span> Modify the query to filter for
+                  only users who signed up in the first 3 months. Does the habit effect strengthen over time
+                  as the product matures, or is it constant?
                 </p>
               </div>
             </TerminalCard>

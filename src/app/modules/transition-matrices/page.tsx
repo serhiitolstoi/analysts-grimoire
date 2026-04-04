@@ -143,20 +143,92 @@ export default function TransitionMatricesPage() {
               </motion.div>
             )}
 
-            {/* Methodology note */}
-            <TerminalCard title="Methodology" accent="none">
-              <div className="text-[11px] text-g-muted space-y-2">
+            <TerminalCard title="Case Study: Markov Chains for Engagement" accent="blue">
+              <div className="text-[11px] text-g-muted space-y-2 leading-relaxed">
                 <p>
-                  <span className="text-g-tan font-bold">States</span> are assigned weekly based on event activity:
-                  casual (&lt;3), active (3–9), power (10+). Missing next week = churned.
+                  A <span className="text-g-blue font-bold">Markov chain</span> models user behavior as transitions
+                  between discrete states. The key assumption: the probability of moving to the next state depends
+                  <em> only on the current state</em>, not on history. This is the &quot;memoryless&quot; property.
                 </p>
                 <p>
-                  <span className="text-g-tan font-bold">Hidden Signal:</span> Compare &quot;All Users&quot; vs
-                  &quot;High Latency Segment&quot; tabs. Users with ≥3 high-latency events show
-                  a statistically significant spike in <em>active → churned</em> probability.
+                  Each cell P<sub>ij</sub> in the matrix represents: &quot;Given a user is in state i this week,
+                  what&apos;s the probability they&apos;ll be in state j next week?&quot; The rows sum to 1.0 (a user must go
+                  <em>somewhere</em>). <span className="text-g-text font-bold">Churned is an absorbing state</span> — once
+                  a user churns, they stay churned (P<sub>churned→churned</sub> ≈ 1.0).
                 </p>
                 <p className="text-g-dim">
-                  Adjust <span className="text-g-tan">System Latency</span> slider below to amplify the signal.
+                  <span className="text-g-blue">Real-world parallel:</span> Spotify uses Markov models to predict
+                  subscriber churn. Netflix uses similar state-transition analysis to identify &quot;at-risk&quot; subscribers
+                  before they cancel. The power is in the comparison — baseline vs. exposed segment.
+                </p>
+              </div>
+            </TerminalCard>
+
+            <TerminalCard title="The Hidden Signal: Latency Kills" accent="red">
+              <div className="text-[11px] text-g-muted space-y-2 leading-relaxed">
+                <p>
+                  Switch to the <span className="text-g-red font-bold">High Latency Segment</span> tab or compare
+                  the two matrices side by side (shown above when on &quot;All Users&quot; view).
+                  Focus on the <span className="text-g-red font-bold">→ churned column</span>.
+                </p>
+                <p>
+                  <span className="text-g-text font-bold">The signal:</span> Users who experienced ≥3 events with
+                  latency &gt;2 seconds show a <span className="text-g-red font-bold">2-3x higher transition probability
+                  from active → churned</span> compared to the general population. This is the &quot;death by a thousand cuts&quot;
+                  pattern — no single slow response kills a user, but accumulated frustration crosses a threshold.
+                </p>
+                <p>
+                  <span className="text-g-text font-bold">Why it matters:</span> Latency-driven churn is invisible
+                  in aggregate metrics. Average latency might be 800ms (fine!), but the p95 could be 4 seconds,
+                  and those tail experiences are silently accumulating frustration in your most active users — the ones
+                  who encounter the most requests.
+                </p>
+                <p>
+                  <span className="text-g-text font-bold">Business implication:</span> If your &quot;active → churned&quot;
+                  probability is 0.15 for the general population but 0.35 for high-latency users, and 20% of your
+                  users are in the high-latency segment, then latency alone accounts for ~4% of total weekly churn.
+                  At 100K active users, that&apos;s 4,000 users lost per week to infrastructure problems.
+                </p>
+              </div>
+            </TerminalCard>
+
+            <TerminalCard title="Reading the Matrix" accent="none">
+              <div className="text-[11px] text-g-muted space-y-2 leading-relaxed">
+                <p>
+                  <span className="text-g-blue font-bold">Diagonal dominance:</span> Strong diagonal (high P<sub>ii</sub>)
+                  means states are &quot;sticky&quot; — power users tend to stay power users, casual users stay casual.
+                  This is good for power users but bad for casual ones (they&apos;re not growing).
+                </p>
+                <p>
+                  <span className="text-g-blue font-bold">Upward mobility:</span> Look at P<sub>casual→active</sub>
+                  and P<sub>active→power</sub>. These are your &quot;graduation rates.&quot; If they&apos;re low (&lt;0.10),
+                  users are getting stuck at their current engagement level.
+                </p>
+                <p>
+                  <span className="text-g-blue font-bold">Churn vulnerability:</span> Compare P<sub>casual→churned</sub>
+                  vs P<sub>power→churned</sub>. The difference tells you how much &quot;insurance&quot; higher engagement provides
+                  against churn. If even power users have high churn probability, your product has a retention ceiling.
+                </p>
+              </div>
+            </TerminalCard>
+
+            <TerminalCard title="Try This" accent="none">
+              <div className="text-[11px] text-g-dim space-y-1.5 leading-relaxed">
+                <p>
+                  <span className="text-g-blue font-bold">Experiment 1:</span> Set{" "}
+                  <span className="text-g-tan">System Latency</span> to 3.0x. Watch the &quot;→ churned&quot; column
+                  light up across all states. Then drop it to 0.5x — the matrix should show much stronger
+                  diagonal stickiness and lower churn rates.
+                </p>
+                <p>
+                  <span className="text-g-blue font-bold">Experiment 2:</span> Compare the &quot;active → churned&quot;
+                  cell between the two matrices at different latency levels. Calculate the relative risk:
+                  P(churn|high_latency) / P(churn|all). Is it &gt;2x? That&apos;s a strong causal signal.
+                </p>
+                <p>
+                  <span className="text-g-blue font-bold">SQL challenge:</span> Modify the transition SQL to use
+                  monthly states instead of weekly. Do the transition probabilities change? Monthly cadence
+                  should show lower churn (more time to come back) but also lower upward mobility.
                 </p>
               </div>
             </TerminalCard>

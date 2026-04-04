@@ -147,20 +147,97 @@ export default function SurvivalAnalysisPage() {
               />
             </TerminalCard>
 
-            <TerminalCard title="Interpretation" accent="none">
-              <div className="text-[11px] text-g-muted space-y-2">
+            <TerminalCard title="Case Study: Time-to-Churn Analysis" accent="blue">
+              <div className="text-[11px] text-g-muted space-y-2 leading-relaxed">
                 <p>
-                  The y-axis shows the <span className="text-g-blue font-bold">probability of survival</span>{" "}
-                  (not having churned) at each time point. The shaded bands are 95% confidence intervals
-                  via Greenwood&apos;s formula.
+                  <span className="text-g-blue font-bold">Survival analysis</span> answers: &quot;How long until a user
+                  churns?&quot; Unlike retention heatmaps (which show % active at discrete intervals), survival curves
+                  model the continuous probability of &quot;surviving&quot; (staying active) over time.
                 </p>
                 <p>
-                  Stratify by <span className="text-g-tan">Artifact Usage</span> to see artifact users
-                  retain significantly longer — confirming the hidden habit-loop signal.
+                  The critical concept is <span className="text-g-text font-bold">censoring</span>. Not every user
+                  has churned — many are still active at the end of our observation window. These users are
+                  &quot;right-censored&quot; — we know they survived <em>at least</em> X days, but we don&apos;t know their true
+                  churn time. Kaplan-Meier handles this correctly by adjusting the risk set at each event time.
+                </p>
+                <p className="text-g-dim">
+                  <span className="text-g-blue">Real-world parallel:</span> Clinical trials use survival analysis to
+                  compare drug efficacy. &quot;Median survival time&quot; tells you when 50% of patients are still alive.
+                  In product analytics, &quot;median survival&quot; tells you when 50% of users have churned — the half-life
+                  of your user base.
+                </p>
+              </div>
+            </TerminalCard>
+
+            <TerminalCard title="Reading the Curves" accent="none">
+              <div className="text-[11px] text-g-muted space-y-2 leading-relaxed">
+                <p>
+                  <span className="text-g-blue font-bold">Y-axis = S(t)</span>: The probability of &quot;surviving&quot;
+                  (not churning) past time t. Starts at 1.0 (everyone alive) and decreases over time.
+                  The <span className="text-g-text font-bold">step function</span> shape reflects that churn events
+                  happen at discrete times.
                 </p>
                 <p>
-                  Stratify by <span className="text-g-red">Latency Exposure</span> to see the churn hazard spike
-                  in users who encountered high latency events.
+                  <span className="text-g-blue font-bold">Shaded bands = 95% CI</span>: Computed via Greenwood&apos;s
+                  formula. Wider bands mean fewer users are still at risk (less statistical precision).
+                  Bands widen over time because the remaining population shrinks.
+                </p>
+                <p>
+                  <span className="text-g-blue font-bold">Curve separation</span>: When two stratified curves
+                  diverge, the gap between them is the <em>survival advantage</em> of one group over another.
+                  If the curves overlap (and confidence bands intersect), the difference may not be statistically
+                  significant. If they separate cleanly, you have a strong signal.
+                </p>
+                <p>
+                  <span className="text-g-blue font-bold">Median survival</span>: Draw a horizontal line at S(t)=0.5.
+                  Where it intersects each curve is the median survival time — the point where 50% of users
+                  have churned. The gap between median times quantifies the retention advantage.
+                </p>
+              </div>
+            </TerminalCard>
+
+            <TerminalCard title="The Hidden Signals in Survival" accent="blue">
+              <div className="text-[11px] text-g-muted space-y-2 leading-relaxed">
+                <p>
+                  <span className="text-g-purple font-bold">Artifact Usage stratification:</span> Artifact users show
+                  dramatically higher survival — their curve stays elevated while baseline users drop off.
+                  The median survival gap is typically <span className="text-g-text font-bold">2-3x</span>. This confirms
+                  the habit loop: artifact creation → shorter IAT → longer retention.
+                </p>
+                <p>
+                  <span className="text-g-red font-bold">Latency Exposure stratification:</span> Users who experienced
+                  multiple high-latency events churn faster — their curve drops earlier and steeper. This is the
+                  same signal as Transition Matrices but viewed through a different lens: instead of weekly probability,
+                  you see the cumulative time-to-churn effect.
+                </p>
+                <p>
+                  <span className="text-g-tan font-bold">Plan stratification:</span> Different plans may show different
+                  survival patterns. Team/Enterprise users often have higher retention (switching costs, organizational
+                  buy-in) while Free users churn fastest (zero switching cost).
+                </p>
+              </div>
+            </TerminalCard>
+
+            <TerminalCard title="Try This" accent="none">
+              <div className="text-[11px] text-g-dim space-y-1.5 leading-relaxed">
+                <p>
+                  <span className="text-g-blue font-bold">Experiment 1:</span> Select &quot;Artifact Usage&quot; stratification
+                  and note the median survival times for both groups. Now increase{" "}
+                  <span className="text-g-purple">Model Quality</span> to 1.0 — does the gap widen? Higher quality means
+                  more users become artifact creators, so the &quot;baseline&quot; group shrinks and becomes more
+                  negatively selected (the remaining non-creators are harder to convert).
+                </p>
+                <p>
+                  <span className="text-g-blue font-bold">Experiment 2:</span> Select &quot;Latency Exposure&quot; and set{" "}
+                  <span className="text-g-tan">System Latency</span> to 0.5x vs 3.0x. At low latency, the two curves
+                  should nearly overlap (almost nobody hits the frustration threshold). At high latency, the curves
+                  diverge dramatically — this is the dose-response relationship between latency and churn.
+                </p>
+                <p>
+                  <span className="text-g-blue font-bold">Python challenge:</span> Modify the KM code to compute
+                  the log-rank test statistic. Add: after computing curves, calculate the expected events under
+                  the null hypothesis and compare to observed. A chi-squared p-value &lt; 0.05 confirms the curves
+                  are statistically different.
                 </p>
               </div>
             </TerminalCard>

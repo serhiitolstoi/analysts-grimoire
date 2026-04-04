@@ -64,20 +64,86 @@ export default function RetentionHeatmapsPage() {
                 height={360}
               />
             </TerminalCard>
-            <TerminalCard title="Reading the Heatmap" accent="none">
-              <div className="text-[11px] text-g-muted space-y-2">
+
+            <TerminalCard title="Case Study: Cohort Analysis for an AI Product" accent="tan">
+              <div className="text-[11px] text-g-muted space-y-2 leading-relaxed">
                 <p>
-                  Each <span className="text-g-purple font-bold">row</span> is a signup cohort month.
-                  Each <span className="text-g-purple font-bold">column</span> is weeks since signup.
-                  Cell color = % of cohort still active.
+                  This is the single most important chart in product analytics. Each row represents a
+                  <span className="text-g-purple font-bold"> signup cohort</span> (users who joined in the same month).
+                  Each column shows the <span className="text-g-purple font-bold">% of that cohort</span> that was
+                  still active N weeks after signing up. Darker purple = higher retention.
                 </p>
                 <p>
-                  <span className="text-g-tan">Darker purple = higher retention.</span>{" "}
-                  Look for the "smile curve" — early drop-off that flattens for retained users.
+                  For an AI product like Claude, retention is existential. Unlike social networks (which have
+                  network effects) or SaaS (which has switching costs), AI assistants must deliver value on
+                  <em> every single session</em>. If the model quality dips or latency spikes, users leave immediately
+                  because the switching cost to a competitor is zero.
                 </p>
                 <p className="text-g-dim">
-                  Adjust <span className="text-g-purple">Model Quality</span> slider —
-                  higher quality strengthens the habit loop and improves week 4+ retention.
+                  <span className="text-g-tan">Industry benchmark:</span> Top consumer AI products retain 15-25%
+                  at day 30. Enterprise AI tools retain 40-60%. If week-4 retention is below 10%, you don&apos;t have
+                  product-market fit yet.
+                </p>
+              </div>
+            </TerminalCard>
+
+            <TerminalCard title="Reading the Heatmap" accent="none">
+              <div className="text-[11px] text-g-muted space-y-2 leading-relaxed">
+                <p>
+                  <span className="text-g-purple font-bold">The &quot;smile curve&quot;:</span> Healthy products show a steep
+                  initial drop (week 0 → week 2) that gradually flattens. The inflection point where the curve
+                  levels off is where your &quot;core users&quot; emerge — the people who found genuine value.
+                </p>
+                <p>
+                  <span className="text-g-purple font-bold">Diagonal patterns:</span> If later cohorts (bottom rows)
+                  have brighter cells than earlier cohorts at the same week, your product is improving over time.
+                  This is the most bullish signal a PM can see — each cohort retains better than the last.
+                </p>
+                <p>
+                  <span className="text-g-purple font-bold">Vertical dark bands:</span> If a specific week column
+                  is dark across all cohorts (e.g., week 3 always drops), you have a structural engagement problem
+                  at that lifecycle stage. Something happens at that moment that pushes users away.
+                </p>
+              </div>
+            </TerminalCard>
+
+            <TerminalCard title="What to Look For" accent="none">
+              <div className="text-[11px] text-g-muted space-y-1.5 leading-relaxed">
+                <p>
+                  <span className="text-g-tan">1.</span> At what week does retention stabilize?
+                  That&apos;s your &quot;core user crystallization point.&quot; For most products, it&apos;s week 3-6.
+                </p>
+                <p>
+                  <span className="text-g-tan">2.</span> What&apos;s the retention rate at the stabilization point?
+                  If it&apos;s 5%, you need 20x more signups to maintain your active user base. If it&apos;s 25%,
+                  you only need 4x.
+                </p>
+                <p>
+                  <span className="text-g-tan">3.</span> Are newer cohorts performing better? Compare the
+                  bottom rows to the top rows at the same week — this tells you whether product changes
+                  are actually improving retention.
+                </p>
+              </div>
+            </TerminalCard>
+
+            <TerminalCard title="Try This" accent="none">
+              <div className="text-[11px] text-g-dim space-y-1.5 leading-relaxed">
+                <p>
+                  <span className="text-g-tan font-bold">Experiment 1:</span> Set{" "}
+                  <span className="text-g-purple">Model Quality</span> to maximum (1.0). Watch the smile curve
+                  flatten earlier — more users find the habit loop and stick around. Then drop it to 0.2 and
+                  see the heatmap go dark.
+                </p>
+                <p>
+                  <span className="text-g-tan font-bold">Experiment 2:</span> Crank up{" "}
+                  <span className="text-g-tan">System Latency</span> to 3.0x. The first few weeks look similar
+                  (users give it a chance), but weeks 4-8 crater as frustration accumulates. This is the
+                  delayed-impact pattern — latency churn doesn&apos;t show up immediately.
+                </p>
+                <p>
+                  <span className="text-g-tan font-bold">SQL challenge:</span> Modify the query to add a
+                  CASE WHEN that splits users into &quot;artifact creators&quot; vs &quot;non-creators&quot; by checking
+                  if any of their events have event_type = &apos;artifact_created&apos;. Which group retains better?
                 </p>
               </div>
             </TerminalCard>

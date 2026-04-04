@@ -190,6 +190,123 @@ export default function ActivityClustersPage() {
                 </div>
               </TerminalCard>
             )}
+
+            <TerminalCard title="Case Study: Unsupervised User Segmentation" accent="green">
+              <div className="text-[11px] text-g-muted space-y-2 leading-relaxed">
+                <p>
+                  <span className="text-g-green font-bold">K-Means clustering</span> discovers natural user segments
+                  without any predefined labels. Instead of defining &quot;power user&quot; with arbitrary rules (like
+                  &quot;≥10 events/week&quot;), the algorithm finds groupings that minimize within-cluster variance
+                  across <em>all</em> features simultaneously.
+                </p>
+                <p>
+                  The process: (1) aggregate raw events into <span className="text-g-text font-bold">6 behavioral features</span> per
+                  user (total events, avg session duration, artifact ratio, code ratio, avg latency, active days),
+                  (2) standardize each feature to zero mean and unit variance — critical, since K-Means is
+                  distance-based and unscaled features with large ranges would dominate, (3) run K-Means to find k
+                  centroids, (4) project from 6D to 2D via PCA for visualization.
+                </p>
+                <p className="text-g-dim">
+                  <span className="text-g-green">Real-world parallel:</span> Spotify uses clustering to build &quot;listener
+                  personas&quot; (Casual Listener, Playlist Curator, Podcast Addict) for personalized recommendations.
+                  Airbnb clusters hosts by behavior to tailor onboarding. The clusters feed downstream systems —
+                  personalization, churn prediction, email campaigns.
+                </p>
+              </div>
+            </TerminalCard>
+
+            <TerminalCard title="Understanding the Visualization" accent="none">
+              <div className="text-[11px] text-g-muted space-y-2 leading-relaxed">
+                <p>
+                  <span className="text-g-green font-bold">The scatter plot</span> shows users projected from
+                  6D feature space into 2D via <span className="text-g-text font-bold">PCA</span> (Principal Component
+                  Analysis). PCA finds the two directions of maximum variance — the axes that best separate users
+                  from each other. Each dot is a user, colored by cluster assignment.
+                </p>
+                <p>
+                  <span className="text-g-green font-bold">Cluster compactness:</span> Tight, well-separated
+                  clusters indicate the algorithm found genuine behavioral groups. Overlapping or diffuse clusters
+                  suggest k is too high or the features don&apos;t cleanly differentiate users.
+                </p>
+                <p>
+                  <span className="text-g-green font-bold">Reading the centroid profiles:</span> The Cluster Profiles
+                  card above shows mean feature values per cluster — read them as personas. High artifact_ratio +
+                  high active_days = &quot;Power Creator.&quot; Low total_events + few active_days = &quot;At-Risk Casual.&quot;
+                  The centroid tells you the archetypal user in that segment.
+                </p>
+              </div>
+            </TerminalCard>
+
+            <TerminalCard title="Choosing k: Art and Science" accent="none">
+              <div className="text-[11px] text-g-muted space-y-2 leading-relaxed">
+                <p>
+                  <span className="text-g-green font-bold">Too few (k=2–3):</span> Oversimplified. You might get
+                  &quot;active&quot; vs &quot;inactive&quot; — useful but shallow. You miss the nuance between types of active users.
+                </p>
+                <p>
+                  <span className="text-g-green font-bold">Too many (k=6+):</span> Overfits. Clusters become
+                  hard to distinguish or act on. If two clusters have nearly identical centroids, they should
+                  probably be merged.
+                </p>
+                <p>
+                  <span className="text-g-green font-bold">The sweet spot (k=3–5):</span> Each cluster tells a
+                  distinct story you can describe in one sentence. Try all four k values and look for when adding
+                  another cluster stops producing meaningfully different segments.
+                </p>
+                <p>
+                  The <span className="text-g-text font-bold">inertia metric</span> measures total within-cluster
+                  variance — lower is tighter. Plot it across k values: the &quot;elbow&quot; where the curve bends
+                  suggests the optimal k. After the elbow, adding more clusters gives diminishing returns.
+                </p>
+              </div>
+            </TerminalCard>
+
+            <TerminalCard title="What to Look For" accent="none">
+              <div className="text-[11px] text-g-muted space-y-1.5 leading-relaxed">
+                <p>
+                  <span className="text-g-green">1.</span>{" "}
+                  <span className="text-g-text font-bold">The churn cluster:</span> At k=4, one cluster typically
+                  shows low total_events, few active_days, and high avg_latency. These are users who tried the
+                  product, hit friction, and disengaged — your highest churn risk and possibly the most recoverable
+                  with better infrastructure.
+                </p>
+                <p>
+                  <span className="text-g-green">2.</span>{" "}
+                  <span className="text-g-text font-bold">The creator cluster:</span> Find the cluster with the
+                  highest artifact_ratio. These are your habit-loop users — the ones who hit the &quot;aha moment.&quot;
+                  Cross-reference with the IAT module: these users should match the high-λ (fast return) segment.
+                </p>
+                <p>
+                  <span className="text-g-green">3.</span>{" "}
+                  <span className="text-g-text font-bold">Feature dominance:</span> Which features vary most between
+                  clusters? If artifact_ratio is similar across all clusters but total_events differs wildly,
+                  the main differentiation is <em>quantity</em> not <em>quality</em> of engagement.
+                </p>
+              </div>
+            </TerminalCard>
+
+            <TerminalCard title="Try This" accent="none">
+              <div className="text-[11px] text-g-dim space-y-1.5 leading-relaxed">
+                <p>
+                  <span className="text-g-green font-bold">Experiment 1:</span> Run k=3, then k=4, then k=5.
+                  At which k does a genuinely new story appear? When do clusters start feeling like arbitrary
+                  splits of the same group? That inflection point is your optimal k.
+                </p>
+                <p>
+                  <span className="text-g-green font-bold">Experiment 2:</span> Set{" "}
+                  <span className="text-g-purple">Model Quality</span> to 0.2 and re-run. Does the creator cluster
+                  collapse into the casual cluster? Low quality suppresses artifact creation, which blurs the
+                  behavioral distinction between engaged and disengaged users.
+                </p>
+                <p>
+                  <span className="text-g-green font-bold">Python challenge:</span> Add silhouette score to the
+                  output. Import <code className="text-g-green">sklearn.metrics</code> and call
+                  <code className="text-g-green"> silhouette_score(X_scaled, labels)</code>. Include it in the
+                  returned JSON. Higher score (0–1) means better-defined clusters — compare it across k values
+                  to find the statistically optimal segmentation.
+                </p>
+              </div>
+            </TerminalCard>
           </div>
         }
       />
