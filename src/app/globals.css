@@ -1,26 +1,126 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Grimoire color palette */
+  --color-g-bg:         #111111;
+  --color-g-surface:    #1a1a1a;
+  --color-g-elevated:   #222222;
+  --color-g-border:     #2e2e2e;
+  --color-g-border-dim: #1e1e1e;
+  --color-g-text:       #e2e2e2;
+  --color-g-muted:      #707070;
+  --color-g-dim:        #444444;
+
+  /* Accent colors */
+  --color-g-tan:        #c9a96e;
+  --color-g-tan-dim:    #8a6e3e;
+  --color-g-purple:     #9b72cf;
+  --color-g-purple-dim: #5c3f8a;
+  --color-g-red:        #cf6679;
+  --color-g-green:      #5faa7a;
+  --color-g-blue:       #5b8dee;
+  --color-g-cyan:       #4aadad;
+
+  /* Dot colors for terminal chrome */
+  --color-dot-close:    #ff5f56;
+  --color-dot-min:      #ffbd2e;
+  --color-dot-max:      #27c93f;
+
+  /* Typography */
+  --font-mono: var(--font-geist-mono), "JetBrains Mono", ui-monospace, "Cascadia Code", monospace;
+
+  /* Spacing */
+  --spacing-sidebar: 220px;
+  --spacing-controller: 64px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Base resets */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-g-bg);
+  color: var(--color-g-text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-g-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-g-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-g-dim);
+}
+
+/* Selection */
+::selection {
+  background: rgba(155, 114, 207, 0.3);
+  color: var(--color-g-text);
+}
+
+/* Observable Plot overrides — dark theme integration */
+figure[class*="plot"] {
+  background: transparent !important;
+}
+
+/* Range input global style */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  background: var(--color-g-border);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-g-tan);
+  cursor: pointer;
+  border: 2px solid var(--color-g-surface);
+  box-shadow: 0 0 0 1px var(--color-g-tan-dim);
+}
+input[type="range"].purple::-webkit-slider-thumb {
+  background: var(--color-g-purple);
+  box-shadow: 0 0 0 1px var(--color-g-purple-dim);
+}
+input[type="range"].red::-webkit-slider-thumb {
+  background: var(--color-g-red);
+}
+
+/* Blinking cursor animation */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.cursor-blink {
+  animation: blink 1.1s step-end infinite;
+}
+
+/* Scanline subtle texture */
+@keyframes scanline {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 4px; }
 }
