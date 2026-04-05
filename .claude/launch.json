@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "grimoire-dev",
+      "runtimeExecutable": "/bin/bash",
+      "runtimeArgs": ["--norc", "--noprofile", "-c", "export PATH='/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:$PATH' && cd '/Users/serhiitolstoi/Documents/projects/claude_code/Product analytics' && npm run dev"],
+      "port": 3000
+    }
+  ]
+}
