@@ -15,8 +15,10 @@ const NAV = [
     label: "Volume & Flow",
     color: "text-g-tan",
     items: [
+      { label: "Engagement Trends",  path: "/modules/engagement-trends",  badge: "WAU" },
       { label: "Conversion Funnels", path: "/modules/conversion-funnels", badge: "LAT" },
       { label: "Retention Heatmaps", path: "/modules/retention-heatmaps", badge: "N-DAY" },
+      { label: "Revenue & LTV",      path: "/modules/revenue-ltv",        badge: "LTV" },
     ],
   },
   {

@@ -6,6 +6,14 @@ import { PARAM_RANGES } from "@/lib/simulation/parameters";
 import { useGhost } from "@/providers/ghost-provider";
 import { cn } from "@/lib/utils/cn";
 
+const PRESETS = [
+  { label: "Baseline",        latencyFactor: 1.0, modelQuality: 0.7,  onboardingFriction: 0.3  },
+  { label: "Ideal State",     latencyFactor: 0.5, modelQuality: 1.0,  onboardingFriction: 0.05 },
+  { label: "Latency Crisis",  latencyFactor: 2.8, modelQuality: 0.7,  onboardingFriction: 0.3  },
+  { label: "Quality Drop",    latencyFactor: 1.0, modelQuality: 0.15, onboardingFriction: 0.3  },
+  { label: "Friction Wall",   latencyFactor: 1.0, modelQuality: 0.7,  onboardingFriction: 0.9  },
+] as const;
+
 export function SimulationController() {
   const { params, setParams, isGenerating, dataVersion } = useSimulation();
   const { ghosts, pinSnapshot, unpinSnapshot } = useGhost();
@@ -14,6 +22,15 @@ export function SimulationController() {
     const label = `v${dataVersion} · L=${params.latencyFactor.toFixed(1)}x`;
     pinSnapshot(label, params, {});
   };
+
+  const applyPreset = (p: typeof PRESETS[number]) => {
+    setParams({ latencyFactor: p.latencyFactor, modelQuality: p.modelQuality, onboardingFriction: p.onboardingFriction });
+  };
+
+  const isActivePreset = (p: typeof PRESETS[number]) =>
+    Math.abs(params.latencyFactor - p.latencyFactor) < 0.05 &&
+    Math.abs(params.modelQuality - p.modelQuality) < 0.05 &&
+    Math.abs(params.onboardingFriction - p.onboardingFriction) < 0.05;
 
   return (
     <motion.div
@@ -34,6 +51,31 @@ export function SimulationController() {
               <span>v{dataVersion} · Ready</span>
             )}
           </div>
+        </div>
+
+        <div className="w-px h-8 bg-g-border shrink-0" />
+
+        {/* Scenario presets */}
+        <div className="flex items-center gap-1 shrink-0">
+          <span className="text-[9px] text-g-dim uppercase tracking-widest mr-1">Presets</span>
+          {PRESETS.map((p) => {
+            const active = isActivePreset(p);
+            return (
+              <button
+                key={p.label}
+                onClick={() => applyPreset(p)}
+                className={cn(
+                  "px-2 py-0.5 rounded text-[10px] border transition-colors whitespace-nowrap",
+                  active
+                    ? "border-g-tan text-g-tan bg-g-tan/10"
+                    : "border-g-border text-g-dim hover:border-g-muted hover:text-g-muted"
+                )}
+                title={`L=${p.latencyFactor}x · Q=${(p.modelQuality * 100).toFixed(0)}% · F=${(p.onboardingFriction * 100).toFixed(0)}%`}
+              >
+                {p.label}
+              </button>
+            );
+          })}
         </div>
 
         <div className="w-px h-8 bg-g-border shrink-0" />

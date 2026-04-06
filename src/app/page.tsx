@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useDuckDB } from "@/providers/duckdb-provider";
 import { useSimulation } from "@/providers/simulation-provider";
 import { TerminalCard } from "@/components/terminal/terminal-card";
+import { KpiDashboard } from "@/components/viz/kpi-dashboard";
 import { Badge } from "@/components/ui/badge";
 import { fmtNum } from "@/lib/utils/format";
 
@@ -23,6 +24,14 @@ const MODULES = [
     levelColor: "tan" as const,
     modules: [
       {
+        title: "Engagement Trends",
+        path: "/modules/engagement-trends",
+        badge: "WAU",
+        badgeVariant: "tan" as const,
+        desc: "Weekly active users, growth accounting (new vs. churned), and stacked composition. The foundational time-series view every product team looks at daily.",
+        signal: "WAU growth = new users − churned users each week",
+      },
+      {
         title: "Conversion Latency Funnels",
         path: "/modules/conversion-funnels",
         badge: "LAT",
@@ -37,6 +46,14 @@ const MODULES = [
         badgeVariant: "tan" as const,
         desc: "Cohort retention matrices tell you whether your product has achieved product-market fit. Look for the 'smile curve' — the week where decay flattens and your core users emerge.",
         signal: "Model quality shifts the smile curve inflection point",
+      },
+      {
+        title: "Revenue & LTV",
+        path: "/modules/revenue-ltv",
+        badge: "LTV",
+        badgeVariant: "tan" as const,
+        desc: "MRR trend (Pro + Team stacked), ARPU and estimated LTV by plan tier, and cohort revenue — connecting every behavioral signal to business impact.",
+        signal: "Latency crisis → MRR flatline in months 8–12",
       },
     ],
   },
@@ -173,6 +190,21 @@ export default function HomePage() {
         {isGenerating && (
           <span className="text-g-tan animate-pulse ml-auto">↻ Regenerating dataset…</span>
         )}
+      </motion.div>
+
+      {/* KPI Dashboard */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.05 }}
+        className="mb-6"
+      >
+        <div className="flex items-center gap-3 mb-2">
+          <span className="text-[10px] text-g-dim uppercase tracking-widest">Live Health KPIs</span>
+          <div className="h-px flex-1 bg-g-border" />
+          <span className="text-[9px] text-g-dim">updates with simulation · hover for definitions</span>
+        </div>
+        <KpiDashboard />
       </motion.div>
 
       {/* Module grid */}
