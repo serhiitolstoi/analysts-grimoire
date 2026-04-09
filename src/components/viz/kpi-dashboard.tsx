@@ -103,7 +103,7 @@ export function KpiDashboard() {
   useEffect(() => { fetch(); }, [dataVersion, ready, isGenerating, fetch]);
 
   return (
-    <div className="grid grid-cols-5 gap-2">
+    <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-2">
       {METRICS.map((m) => {
         const raw = kpis?.[m.key] ?? null;
         const h = raw !== null ? health(m, Number(raw)) : null;

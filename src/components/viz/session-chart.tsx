@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import * as Plot from "@observablehq/plot";
 import { COLORS } from "@/lib/utils/colors";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useContainerWidth } from "@/lib/hooks/use-container-width";
 
 interface SessionRow {
   session_id: string;
@@ -30,15 +31,19 @@ interface SessionChartProps {
 }
 
 export function SessionChart({ data, isLoading, error, width = 600, height = 400 }: SessionChartProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
+  const containerWidth = useContainerWidth(containerRef, width);
+  const chartWidth = containerWidth || width;
+  const chartHeight = Math.round(Math.min(height, Math.max(240, chartWidth * 0.67)));
 
   useEffect(() => {
     if (!ref.current || !data) return;
     ref.current.innerHTML = "";
 
     const plot = Plot.plot({
-      width,
-      height,
+      width: chartWidth,
+      height: chartHeight,
       marginLeft: 55,
       marginBottom: 50,
       marginTop: 20,
@@ -103,11 +108,11 @@ export function SessionChart({ data, isLoading, error, width = 600, height = 400
 
     ref.current.appendChild(plot);
     return () => { if (ref.current) ref.current.innerHTML = ""; };
-  }, [data, width, height]);
+  }, [data, chartWidth, chartHeight]);
 
   if (isLoading) return <div className="flex items-center justify-center h-full"><LoadingSpinner message="Classifying sessions…" /></div>;
   if (error) return <div className="flex items-center justify-center h-full p-4 text-g-red text-xs">{error}</div>;
   if (!data) return <div className="flex items-center justify-center h-full text-g-dim text-xs">Run query to render scatter</div>;
 
-  return <div ref={ref} />;
+  return <div ref={containerRef} className="w-full"><div ref={ref} /></div>;
 }

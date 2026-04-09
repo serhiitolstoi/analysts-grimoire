@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import * as Plot from "@observablehq/plot";
 import { COLORS } from "@/lib/utils/colors";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useContainerWidth } from "@/lib/hooks/use-container-width";
 
 // ── MRR Trend ──────────────────────────────────────────────────────────────
 
@@ -25,7 +26,11 @@ interface MrrChartProps {
 }
 
 export function MrrChart({ data, isLoading, error, width = 600, height = 280 }: MrrChartProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
+  const containerWidth = useContainerWidth(containerRef, width);
+  const chartWidth = containerWidth || width;
+  const chartHeight = Math.round(Math.min(height, Math.max(180, chartWidth * 0.47)));
 
   useEffect(() => {
     if (!ref.current || !data || data.length === 0) return;
@@ -45,7 +50,7 @@ export function MrrChart({ data, isLoading, error, width = 600, height = 280 }: 
     ];
 
     const plot = Plot.plot({
-      width, height,
+      width: chartWidth, height: chartHeight,
       marginLeft: 60, marginRight: 20, marginTop: 20, marginBottom: 50,
       style: {
         background: "transparent",
@@ -84,13 +89,13 @@ export function MrrChart({ data, isLoading, error, width = 600, height = 280 }: 
 
     ref.current.appendChild(plot);
     return () => { if (ref.current) ref.current.innerHTML = ""; };
-  }, [data, width, height]);
+  }, [data, chartWidth, chartHeight]);
 
   if (isLoading) return <div className="flex items-center justify-center h-full"><LoadingSpinner message="Computing MRR…" /></div>;
   if (error)     return <div className="flex items-center justify-center h-full p-4 text-g-red text-xs">{error}</div>;
   if (!data)     return <div className="flex items-center justify-center h-full text-g-dim text-xs">Run query to render chart</div>;
 
-  return <div ref={ref} />;
+  return <div ref={containerRef} className="w-full"><div ref={ref} /></div>;
 }
 
 // ── Cohort Revenue Heatmap ──────────────────────────────────────────────────
@@ -111,7 +116,11 @@ interface CohortRevenueProps {
 }
 
 export function CohortRevenueChart({ data, isLoading, error, width = 600, height = 260 }: CohortRevenueProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
+  const containerWidth = useContainerWidth(containerRef, width);
+  const chartWidth = containerWidth || width;
+  const chartHeight = Math.round(Math.min(height, Math.max(180, chartWidth * 0.43)));
 
   useEffect(() => {
     if (!ref.current || !data || data.length === 0) return;
@@ -127,7 +136,7 @@ export function CohortRevenueChart({ data, isLoading, error, width = 600, height
     const maxLtv = Math.max(...rows.map((r) => r.avg_ltv_per_user));
 
     const plot = Plot.plot({
-      width, height,
+      width: chartWidth, height: chartHeight,
       marginLeft: 70, marginRight: 80, marginTop: 20, marginBottom: 40,
       style: {
         background: "transparent",
@@ -169,11 +178,11 @@ export function CohortRevenueChart({ data, isLoading, error, width = 600, height
 
     ref.current.appendChild(plot);
     return () => { if (ref.current) ref.current.innerHTML = ""; };
-  }, [data, width, height]);
+  }, [data, chartWidth, chartHeight]);
 
   if (isLoading) return <div className="flex items-center justify-center h-full"><LoadingSpinner message="Computing cohort LTV…" /></div>;
   if (error)     return <div className="flex items-center justify-center h-full p-4 text-g-red text-xs">{error}</div>;
   if (!data)     return <div className="flex items-center justify-center h-full text-g-dim text-xs">Run query to render chart</div>;
 
-  return <div ref={ref} />;
+  return <div ref={containerRef} className="w-full"><div ref={ref} /></div>;
 }

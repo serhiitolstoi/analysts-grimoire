@@ -42,7 +42,12 @@ const NAV = [
   },
 ] as const;
 
-export function Sidebar() {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+function SidebarContent({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
   const { ready } = useDuckDB();
   const { isGenerating, rowCounts } = useSimulation();
@@ -52,10 +57,7 @@ export function Sidebar() {
     setCollapsed((s) => ({ ...s, [label]: !s[label] }));
 
   return (
-    <aside
-      className="flex flex-col shrink-0 border-r border-g-border bg-g-surface overflow-y-auto"
-      style={{ width: "var(--spacing-sidebar)" }}
-    >
+    <>
       {/* Logo / title */}
       <div className="px-4 py-4 border-b border-g-border">
         <div className="text-g-tan text-xs font-bold tracking-widest uppercase">
@@ -93,9 +95,10 @@ export function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 py-3 px-2 space-y-1">
+      <nav className="flex-1 py-3 px-2 space-y-1 overflow-y-auto">
         <Link
           href="/"
+          onClick={onClose}
           className={cn(
             "flex items-center px-2 py-1.5 rounded text-xs transition-colors",
             pathname === "/"
@@ -137,6 +140,7 @@ export function Sidebar() {
                       <Link
                         key={item.path}
                         href={item.path}
+                        onClick={onClose}
                         className={cn(
                           "flex items-center justify-between px-2 py-1.5 rounded text-xs transition-colors ml-2 group",
                           active
@@ -170,6 +174,59 @@ export function Sidebar() {
         <div>Powered by DuckDB-Wasm</div>
         <div>+ Pyodide + Observable Plot</div>
       </div>
-    </aside>
+    </>
+  );
+}
+
+export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
+  return (
+    <>
+      {/* Desktop sidebar — always visible on md+ */}
+      <aside
+        className="hidden md:flex flex-col shrink-0 border-r border-g-border bg-g-surface overflow-y-auto"
+        style={{ width: "var(--spacing-sidebar)" }}
+      >
+        <SidebarContent />
+      </aside>
+
+      {/* Mobile drawer — overlay on < md */}
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              key="backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/60 z-40 md:hidden"
+              onClick={onClose}
+            />
+
+            {/* Drawer */}
+            <motion.aside
+              key="drawer"
+              initial={{ x: -220 }}
+              animate={{ x: 0 }}
+              exit={{ x: -220 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="fixed inset-y-0 left-0 z-50 flex flex-col bg-g-surface border-r border-g-border md:hidden overflow-y-auto"
+              style={{ width: 220 }}
+            >
+              {/* Close button */}
+              <button
+                onClick={onClose}
+                className="absolute top-3 right-3 text-g-muted hover:text-g-text text-lg leading-none z-10"
+                aria-label="Close menu"
+              >
+                ✕
+              </button>
+              <SidebarContent onClose={onClose} />
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

@@ -5,6 +5,7 @@ import * as Plot from "@observablehq/plot";
 import { COLORS, MATRIX_SCALE } from "@/lib/utils/colors";
 import { fmtProb } from "@/lib/utils/format";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useContainerWidth } from "@/lib/hooks/use-container-width";
 
 interface MatrixRow {
   from_state: string;
@@ -42,15 +43,20 @@ export function MatrixGrid({
   width = 480,
   height = 440,
 }: MatrixGridProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
+  const containerWidth = useContainerWidth(containerRef, width);
+  const chartWidth = containerWidth || width;
+  // Matrix is square-ish — scale height proportionally
+  const chartHeight = Math.round(Math.min(height, Math.max(280, chartWidth * 0.92)));
 
   useEffect(() => {
     if (!ref.current || !data) return;
     ref.current.innerHTML = "";
 
     const plot = Plot.plot({
-      width,
-      height,
+      width: chartWidth,
+      height: chartHeight,
       marginLeft: 72,
       marginBottom: 60,
       marginTop: 40,
@@ -120,7 +126,7 @@ export function MatrixGrid({
 
     ref.current.appendChild(plot);
     return () => { if (ref.current) ref.current.innerHTML = ""; };
-  }, [data, ghostData, ghostColor, width, height]);
+  }, [data, ghostData, ghostColor, chartWidth, chartHeight]);
 
   if (isLoading) {
     return (
@@ -147,7 +153,7 @@ export function MatrixGrid({
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div ref={containerRef} className="w-full flex flex-col gap-2">
       {title && (
         <div className="text-g-muted text-[10px] uppercase tracking-wider px-1">{title}</div>
       )}

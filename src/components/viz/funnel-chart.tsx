@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import * as Plot from "@observablehq/plot";
 import { COLORS } from "@/lib/utils/colors";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useContainerWidth } from "@/lib/hooks/use-container-width";
 
 interface FunnelRow {
   step: string;
@@ -29,7 +30,12 @@ interface FunnelChartProps {
 }
 
 export function FunnelChart({ data, isLoading, error, width = 640, height = 300 }: FunnelChartProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
+  const containerWidth = useContainerWidth(containerRef, width);
+  const chartWidth = containerWidth || width;
+  const chartHeight = Math.round(Math.min(height, Math.max(180, chartWidth * 0.47)));
+  const marginLeft = Math.min(200, Math.round(chartWidth * 0.35));
 
   useEffect(() => {
     if (!ref.current || !data) return;
@@ -38,9 +44,9 @@ export function FunnelChart({ data, isLoading, error, width = 640, height = 300 
     const labeled = data.map((d) => ({ ...d, label: STEP_LABELS[d.step] ?? d.step }));
 
     const plot = Plot.plot({
-      width,
-      height,
-      marginLeft: 200,
+      width: chartWidth,
+      height: chartHeight,
+      marginLeft,
       marginBottom: 50,
       marginTop: 20,
       marginRight: 60,
@@ -119,11 +125,11 @@ export function FunnelChart({ data, isLoading, error, width = 640, height = 300 
 
     ref.current.appendChild(plot);
     return () => { if (ref.current) ref.current.innerHTML = ""; };
-  }, [data, width, height]);
+  }, [data, chartWidth, chartHeight, marginLeft]);
 
   if (isLoading) return <div className="flex items-center justify-center h-full"><LoadingSpinner message="Computing conversion latency…" /></div>;
   if (error) return <div className="flex items-center justify-center h-full p-4 text-g-red text-xs">{error}</div>;
   if (!data) return <div className="flex items-center justify-center h-full text-g-dim text-xs">Run query to render funnel</div>;
 
-  return <div ref={ref} />;
+  return <div ref={containerRef} className="w-full"><div ref={ref} /></div>;
 }

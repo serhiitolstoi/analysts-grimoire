@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import * as Plot from "@observablehq/plot";
 import { COLORS } from "@/lib/utils/colors";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useContainerWidth } from "@/lib/hooks/use-container-width";
 
 interface RetentionRow {
   cohort_month: string;
@@ -23,7 +24,11 @@ interface HeatmapProps {
 }
 
 export function RetentionHeatmap({ data, mode = "weekly", isLoading, error, width = 700, height = 380 }: HeatmapProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
+  const containerWidth = useContainerWidth(containerRef, width);
+  const chartWidth = containerWidth || width;
+  const chartHeight = Math.round(Math.min(height, Math.max(220, chartWidth * 0.54)));
 
   useEffect(() => {
     if (!ref.current || !data) return;
@@ -36,9 +41,9 @@ export function RetentionHeatmap({ data, mode = "weekly", isLoading, error, widt
     const filtered = data.filter((d) => (d[xKey] ?? 0) <= xMax);
 
     const plot = Plot.plot({
-      width,
-      height,
-      marginLeft: 70,
+      width: chartWidth,
+      height: chartHeight,
+      marginLeft: Math.min(70, Math.round(chartWidth * 0.12)),
       marginBottom: 50,
       marginTop: 20,
       marginRight: 60,
@@ -79,11 +84,11 @@ export function RetentionHeatmap({ data, mode = "weekly", isLoading, error, widt
 
     ref.current.appendChild(plot);
     return () => { if (ref.current) ref.current.innerHTML = ""; };
-  }, [data, mode, width, height]);
+  }, [data, mode, chartWidth, chartHeight]);
 
   if (isLoading) return <div className="flex items-center justify-center h-full"><LoadingSpinner message="Computing retention cohorts…" /></div>;
   if (error) return <div className="flex items-center justify-center h-full p-4 text-g-red text-xs">{error}</div>;
   if (!data) return <div className="flex items-center justify-center h-full text-g-dim text-xs">Run query to render heatmap</div>;
 
-  return <div ref={ref} />;
+  return <div ref={containerRef} className="w-full"><div ref={ref} /></div>;
 }

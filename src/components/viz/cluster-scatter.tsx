@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import * as Plot from "@observablehq/plot";
 import { COLORS } from "@/lib/utils/colors";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useContainerWidth } from "@/lib/hooks/use-container-width";
 
 export interface ClusterResult {
   labels: number[];
@@ -32,7 +33,11 @@ interface ClusterScatterProps {
 }
 
 export function ClusterScatter({ result, isLoading, error, width = 600, height = 420 }: ClusterScatterProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
+  const containerWidth = useContainerWidth(containerRef, width);
+  const chartWidth = containerWidth || width;
+  const chartHeight = Math.round(Math.min(height, Math.max(240, chartWidth * 0.7)));
 
   useEffect(() => {
     if (!ref.current || !result) return;
@@ -61,8 +66,8 @@ export function ClusterScatter({ result, isLoading, error, width = 600, height =
     const colorRange = clusterDomain.map((c) => CLUSTER_COLORS[c % CLUSTER_COLORS.length]);
 
     const plot = Plot.plot({
-      width,
-      height,
+      width: chartWidth,
+      height: chartHeight,
       marginLeft: 30,
       marginBottom: 50,
       marginTop: 20,
@@ -130,7 +135,7 @@ export function ClusterScatter({ result, isLoading, error, width = 600, height =
 
     ref.current.appendChild(plot);
     return () => { if (ref.current) ref.current.innerHTML = ""; };
-  }, [result, width, height]);
+  }, [result, chartWidth, chartHeight]);
 
   if (isLoading) return (
     <div className="flex flex-col items-center justify-center h-full gap-3">
@@ -142,7 +147,7 @@ export function ClusterScatter({ result, isLoading, error, width = 600, height =
   if (!result) return <div className="flex items-center justify-center h-full text-g-dim text-xs">Run Python to render clusters</div>;
 
   return (
-    <div className="flex flex-col gap-2">
+    <div ref={containerRef} className="w-full flex flex-col gap-2">
       <div className="flex gap-4 flex-wrap text-[10px] px-1">
         {result.cluster_stats.map((cs, i) => (
           <div key={cs.cluster} className="flex items-center gap-1.5">

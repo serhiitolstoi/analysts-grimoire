@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import * as Plot from "@observablehq/plot";
 import { COLORS } from "@/lib/utils/colors";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useContainerWidth } from "@/lib/hooks/use-container-width";
 
 export interface EngagementRow {
   week_start:      string;
@@ -32,7 +33,11 @@ export function EngagementChart({
   width = 640,
   height = 320,
 }: EngagementChartProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
+  const containerWidth = useContainerWidth(containerRef, width);
+  const chartWidth = containerWidth || width;
+  const chartHeight = Math.round(Math.min(height, Math.max(200, chartWidth * 0.5)));
 
   useEffect(() => {
     if (!ref.current || !data || data.length === 0) return;
@@ -66,7 +71,7 @@ export function EngagementChart({
     if (mode === "wau") {
       // Weekly Active Users area + line
       plot = Plot.plot({
-        width, height,
+        width: chartWidth, height: chartHeight,
         marginLeft: 55, marginRight: 20, marginTop: 20, marginBottom: 50,
         style: baseStyle,
         x: xAxis,
@@ -111,7 +116,7 @@ export function EngagementChart({
         ...rows.map((d) => ({ date: d.date, value: -d.churned_users, type: "Churned" })),
       ];
       plot = Plot.plot({
-        width, height,
+        width: chartWidth, height: chartHeight,
         marginLeft: 55, marginRight: 20, marginTop: 20, marginBottom: 50,
         style: baseStyle,
         x: xAxis,
@@ -142,7 +147,7 @@ export function EngagementChart({
         ...rows.map((d) => ({ date: d.date, value: d.new_users, type: "New" })),
       ];
       plot = Plot.plot({
-        width, height,
+        width: chartWidth, height: chartHeight,
         marginLeft: 55, marginRight: 20, marginTop: 20, marginBottom: 50,
         style: baseStyle,
         x: xAxis,
@@ -165,11 +170,11 @@ export function EngagementChart({
 
     ref.current.appendChild(plot);
     return () => { if (ref.current) ref.current.innerHTML = ""; };
-  }, [data, mode, width, height]);
+  }, [data, mode, chartWidth, chartHeight]);
 
   if (isLoading) return <div className="flex items-center justify-center h-full"><LoadingSpinner message="Computing engagement trends…" /></div>;
   if (error)     return <div className="flex items-center justify-center h-full p-4 text-g-red text-xs">{error}</div>;
   if (!data)     return <div className="flex items-center justify-center h-full text-g-dim text-xs">Run query to render chart</div>;
 
-  return <div ref={ref} />;
+  return <div ref={containerRef} className="w-full"><div ref={ref} /></div>;
 }

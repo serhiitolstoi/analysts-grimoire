@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import * as Plot from "@observablehq/plot";
 import { COLORS } from "@/lib/utils/colors";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useContainerWidth } from "@/lib/hooks/use-container-width";
 
 export interface KMCurve {
   group: string;
@@ -26,7 +27,13 @@ interface SurvivalCurveProps {
 }
 
 export function SurvivalCurve({ curves, isLoading, error, width = 640, height = 400 }: SurvivalCurveProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
+  const containerWidth = useContainerWidth(containerRef, width);
+  const chartWidth = containerWidth || width;
+  const chartHeight = Math.round(Math.min(height, Math.max(240, chartWidth * 0.625)));
+  // Reduce legend margin on narrow screens
+  const marginRight = Math.min(120, Math.round(chartWidth * 0.2));
 
   useEffect(() => {
     if (!ref.current || !curves) return;
@@ -47,12 +54,12 @@ export function SurvivalCurve({ curves, isLoading, error, width = 640, height = 
     const colorRange = curves.map((_, i) => GROUP_COLORS[i % GROUP_COLORS.length]);
 
     const plot = Plot.plot({
-      width,
-      height,
+      width: chartWidth,
+      height: chartHeight,
       marginLeft: 55,
       marginBottom: 50,
       marginTop: 20,
-      marginRight: 120,
+      marginRight,
       style: {
         background: "transparent",
         color: COLORS.text,
@@ -107,7 +114,7 @@ export function SurvivalCurve({ curves, isLoading, error, width = 640, height = 
 
     ref.current.appendChild(plot);
     return () => { if (ref.current) ref.current.innerHTML = ""; };
-  }, [curves, width, height]);
+  }, [curves, chartWidth, chartHeight, marginRight]);
 
   if (isLoading) return (
     <div className="flex flex-col items-center justify-center h-full gap-3">
@@ -119,7 +126,7 @@ export function SurvivalCurve({ curves, isLoading, error, width = 640, height = 
   if (!curves) return <div className="flex items-center justify-center h-full text-g-dim text-xs">Run Python to render survival curves</div>;
 
   return (
-    <div className="flex flex-col gap-2">
+    <div ref={containerRef} className="w-full flex flex-col gap-2">
       {/* Stats table */}
       <div className="flex gap-4 text-[10px] px-1 flex-wrap">
         {curves.map((c, i) => (

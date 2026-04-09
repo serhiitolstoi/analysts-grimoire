@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import * as Plot from "@observablehq/plot";
 import { COLORS } from "@/lib/utils/colors";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useContainerWidth } from "@/lib/hooks/use-container-width";
 
 interface IATRow {
   user_id: string;
@@ -28,7 +29,11 @@ interface DistributionChartProps {
 }
 
 export function IATDistributionChart({ data, summary, isLoading, error, width = 640, height = 380 }: DistributionChartProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
+  const containerWidth = useContainerWidth(containerRef, width);
+  const chartWidth = containerWidth || width;
+  const chartHeight = Math.round(Math.min(height, Math.max(220, chartWidth * 0.59)));
 
   useEffect(() => {
     if (!ref.current || !data) return;
@@ -46,8 +51,8 @@ export function IATDistributionChart({ data, summary, isLoading, error, width = 
     }
 
     const plot = Plot.plot({
-      width,
-      height,
+      width: chartWidth,
+      height: chartHeight,
       marginLeft: 60,
       marginBottom: 50,
       marginTop: 20,
@@ -111,16 +116,16 @@ export function IATDistributionChart({ data, summary, isLoading, error, width = 
 
     ref.current.appendChild(plot);
     return () => { if (ref.current) ref.current.innerHTML = ""; };
-  }, [data, summary, width, height]);
+  }, [data, summary, chartWidth, chartHeight]);
 
   if (isLoading) return <div className="flex items-center justify-center h-full"><LoadingSpinner message="Computing IAT distribution…" /></div>;
   if (error) return <div className="flex items-center justify-center h-full p-4 text-g-red text-xs">{error}</div>;
   if (!data) return <div className="flex items-center justify-center h-full text-g-dim text-xs">Run query to render distribution</div>;
 
   return (
-    <div className="flex flex-col gap-2">
+    <div ref={containerRef} className="w-full flex flex-col gap-2">
       {summary && (
-        <div className="flex gap-4 text-[11px] px-1">
+        <div className="flex flex-wrap gap-4 text-[11px] px-1">
           {summary.map((s) => (
             <div key={s.user_type} className="flex items-center gap-1.5">
               <span

@@ -124,3 +124,11 @@ input[type="range"].red::-webkit-slider-thumb {
   0% { background-position: 0 0; }
   100% { background-position: 0 4px; }
 }
+
+/* Mobile responsive overrides */
+@media (max-width: 767px) {
+  :root {
+    --spacing-controller: 44px;
+    --spacing-sidebar: 0px;
+  }
+}

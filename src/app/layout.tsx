@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/providers/providers";
-import { Sidebar } from "@/components/layout/sidebar";
-import { SimulationController } from "@/components/layout/simulation-controller";
+import { ClientLayout } from "@/components/layout/client-layout";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -23,21 +22,7 @@ export default function RootLayout({
     <html lang="en" className={`${geistMono.variable} h-full`}>
       <body className="h-full overflow-hidden bg-g-bg text-g-text font-mono">
         <Providers>
-          <div className="flex h-full">
-            {/* Sidebar */}
-            <Sidebar />
-
-            {/* Main content area */}
-            <main
-              className="flex-1 overflow-hidden flex flex-col"
-              style={{ paddingBottom: "var(--spacing-controller)" }}
-            >
-              {children}
-            </main>
-          </div>
-
-          {/* Global simulation controller — fixed bottom bar */}
-          <SimulationController />
+          <ClientLayout>{children}</ClientLayout>
         </Providers>
       </body>
     </html>

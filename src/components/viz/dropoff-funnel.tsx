@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import * as Plot from "@observablehq/plot";
 import { COLORS } from "@/lib/utils/colors";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useContainerWidth } from "@/lib/hooks/use-container-width";
 
 export interface DropoffRow {
   seq: number;
@@ -27,7 +28,12 @@ export function DropoffFunnelChart({
   width = 580,
   height = 320,
 }: DropoffFunnelProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
+  const containerWidth = useContainerWidth(containerRef, width);
+  const chartWidth = containerWidth || width;
+  const chartHeight = Math.round(Math.min(height, Math.max(200, chartWidth * 0.55)));
+  const marginLeft = Math.min(180, Math.round(chartWidth * 0.32));
 
   useEffect(() => {
     if (!ref.current || !data || data.length === 0) return;
@@ -49,10 +55,10 @@ export function DropoffFunnelChart({
     }));
 
     const plot = Plot.plot({
-      width,
-      height,
-      marginLeft: 180,
-      marginRight: 90,
+      width: chartWidth,
+      height: chartHeight,
+      marginLeft,
+      marginRight: Math.min(90, Math.round(chartWidth * 0.18)),
       marginTop: 16,
       marginBottom: 40,
       style: {
@@ -142,7 +148,7 @@ export function DropoffFunnelChart({
     return () => {
       if (ref.current) ref.current.innerHTML = "";
     };
-  }, [data, width, height]);
+  }, [data, chartWidth, chartHeight, marginLeft]);
 
   if (isLoading)
     return (
@@ -163,5 +169,5 @@ export function DropoffFunnelChart({
       </div>
     );
 
-  return <div ref={ref} />;
+  return <div ref={containerRef} className="w-full"><div ref={ref} /></div>;
 }
