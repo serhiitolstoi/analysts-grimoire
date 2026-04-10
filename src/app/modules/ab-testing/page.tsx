@@ -28,20 +28,6 @@ const METRICS: { key: MetricKey; label: string }[] = [
   { key: "code_rate",       label: "Code Runner" },
 ];
 
-// DuckDB-Wasm returns BigInt for INTEGER/BIGINT columns — convert to JS Number
-function normalizeRow(row: unknown): unknown {
-  if (row === null || typeof row !== "object") return row;
-  return Object.fromEntries(
-    Object.entries(row as Record<string, unknown>).map(([k, v]) => [
-      k,
-      typeof v === "bigint" ? Number(v) : v,
-    ])
-  );
-}
-function normalizeRows(rows: unknown[] | null): unknown[] | null {
-  return rows ? rows.map(normalizeRow) : null;
-}
-
 export default function ABTestingPage() {
   const { runSQL, ready } = useDuckDB();
   const { dataVersion, isGenerating } = useSimulation();
@@ -57,7 +43,7 @@ export default function ABTestingPage() {
   const runQuery = useCallback(async (q: string) => {
     if (!ready || isGenerating) return;
     setIsRunning(true); setError(null);
-    try { setData(normalizeRows(await runSQL(q))); }
+    try { setData(await runSQL(q)); }
     catch (e) { setError(String(e)); }
     finally { setIsRunning(false); }
   }, [ready, isGenerating, runSQL]);
@@ -68,8 +54,8 @@ export default function ABTestingPage() {
       runSQL(AB_COMPARISON_SQL.trim()).catch(() => null),
       runSQL(AB_WEEKLY_SQL.trim()).catch(() => null),
     ]);
-    setData(normalizeRows(comp));
-    setWeeklyData(normalizeRows(weekly));
+    setData(comp);
+    setWeeklyData(weekly);
     setSql(AB_COMPARISON_SQL.trim());
   }, [ready, isGenerating, runSQL]);
 

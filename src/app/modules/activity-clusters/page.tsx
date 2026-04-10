@@ -38,12 +38,16 @@ HAVING total_events >= 5
 // We'll compute avg_session_min separately and merge
 
 const SESSION_DUR_SQL = `
-SELECT
-  user_id,
-  AVG(EPOCH(MAX(timestamp::TIMESTAMP) - MIN(timestamp::TIMESTAMP)) / 60.0) AS avg_session_min
-FROM events
-GROUP BY user_id, session_id
-HAVING COUNT(*) > 1
+SELECT user_id, AVG(session_min) AS avg_session_min
+FROM (
+  SELECT
+    user_id,
+    EPOCH(MAX(timestamp::TIMESTAMP) - MIN(timestamp::TIMESTAMP)) / 60.0 AS session_min
+  FROM events
+  GROUP BY user_id, session_id
+  HAVING COUNT(*) > 1
+) s
+GROUP BY user_id
 `;
 
 export default function ActivityClustersPage() {

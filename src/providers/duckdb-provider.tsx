@@ -31,7 +31,14 @@ export function DuckDBProvider({ children }: { children: React.ReactNode }) {
 
   const runSQL = useCallback(async (query: string): Promise<QueryRow[]> => {
     const { runSQL: _run } = await import("@/lib/engine/duckdb-client");
-    return _run(query);
+    const rows = await _run(query);
+    // DuckDB-Wasm returns JS BigInt for INTEGER/BIGINT/HUGEINT columns.
+    // Convert to Number so all consumers can safely use arithmetic, toFixed(), etc.
+    return rows.map((row) =>
+      Object.fromEntries(
+        Object.entries(row).map(([k, v]) => [k, typeof v === "bigint" ? Number(v) : v])
+      )
+    ) as QueryRow[];
   }, []);
 
   return (
