@@ -146,6 +146,19 @@ function LineChart({ data, x, lines, colors, label = "", xIsDate = false }: {
 
 // ── Main page ──────────────────────────────────────────────────────────────
 
+function normalizeRow(row: unknown): Record<string, unknown> {
+  if (row === null || typeof row !== "object") return {};
+  return Object.fromEntries(
+    Object.entries(row as Record<string, unknown>).map(([k, v]) => [
+      k,
+      typeof v === "bigint" ? Number(v) : v,
+    ])
+  );
+}
+function normalizeRows(rows: unknown[]): Record<string, unknown>[] {
+  return rows.map(normalizeRow);
+}
+
 export default function AnalyticsPitfallsPage() {
   const { runSQL, ready } = useDuckDB();
   const { dataVersion, isGenerating } = useSimulation();
@@ -168,14 +181,15 @@ export default function AnalyticsPitfallsPage() {
   const fetchData = useCallback(async (p: PitfallId) => {
     if (!ready || isGenerating) return;
     setIsRunning(true); setError(null);
+    setData([]); setData2([]);
     try {
       const sqls = PITFALL_SQLS[p];
       const [d1, d2] = await Promise.all([
         runSQL(sqls.trap.trim()).catch(() => [] as unknown[]),
         runSQL(sqls.correct.trim()).catch(() => [] as unknown[]),
       ]);
-      setData(d1 as Record<string, unknown>[]);
-      setData2(d2 as Record<string, unknown>[]);
+      setData(normalizeRows(d1 as unknown[]));
+      setData2(normalizeRows(d2 as unknown[]));
       setSql(sqls.trap.trim());
     } catch (e) { setError(String(e)); }
     finally { setIsRunning(false); }
@@ -197,8 +211,8 @@ export default function AnalyticsPitfallsPage() {
     setIsRunning(true); setError(null);
     try {
       const rows = await runSQL(q);
-      if (viewMode === "trap") setData(rows as Record<string, unknown>[]);
-      else setData2(rows as Record<string, unknown>[]);
+      if (viewMode === "trap") setData(normalizeRows(rows as unknown[]));
+      else setData2(normalizeRows(rows as unknown[]));
     } catch (e) { setError(String(e)); }
     finally { setIsRunning(false); }
   }, [ready, isGenerating, runSQL, viewMode]);

@@ -4,7 +4,7 @@ export const AB_COMPARISON_SQL = `
 WITH ab_assignment AS (
   SELECT
     user_id,
-    CASE WHEN hash(user_id)::BIGINT % 2 = 0 THEN 'Control' ELSE 'Treatment' END AS ab_group
+    CASE WHEN hash(user_id) % 2 = 0 THEN 'Control' ELSE 'Treatment' END AS ab_group
   FROM users
   WHERE onboarding_completed = true
 ),
@@ -40,7 +40,7 @@ export const AB_WEEKLY_SQL = `
 WITH ab_assignment AS (
   SELECT
     user_id,
-    CASE WHEN hash(user_id)::BIGINT % 2 = 0 THEN 'Control' ELSE 'Treatment' END AS ab_group
+    CASE WHEN hash(user_id) % 2 = 0 THEN 'Control' ELSE 'Treatment' END AS ab_group
   FROM users
   WHERE onboarding_completed = true
 ),
@@ -67,7 +67,7 @@ export const AB_RETENTION_SQL = `
 WITH ab_assignment AS (
   SELECT
     user_id,
-    CASE WHEN hash(user_id)::BIGINT % 2 = 0 THEN 'Control' ELSE 'Treatment' END AS ab_group
+    CASE WHEN hash(user_id) % 2 = 0 THEN 'Control' ELSE 'Treatment' END AS ab_group
   FROM users
   WHERE onboarding_completed = true
 ),
