@@ -40,6 +40,15 @@ const NAV = [
       { label: "Activity Clusters",   path: "/modules/activity-clusters",   badge: "K-M" },
     ],
   },
+  {
+    level: "Level 4",
+    label: "Experimentation & Traps",
+    color: "text-g-red",
+    items: [
+      { label: "A/B Testing",        path: "/modules/ab-testing",        badge: "A/B" },
+      { label: "Analytics Pitfalls", path: "/modules/analytics-pitfalls", badge: "TRAP" },
+    ],
+  },
 ] as const;
 
 interface SidebarProps {

@@ -111,6 +111,29 @@ const MODULES = [
       },
     ],
   },
+  {
+    level: "Level 4",
+    levelLabel: "Experimentation & Traps",
+    levelColor: "red" as const,
+    modules: [
+      {
+        title: "A/B Testing",
+        path: "/modules/ab-testing",
+        badge: "A/B",
+        badgeVariant: "red" as const,
+        desc: "Design statistically rigorous experiments: z-test for proportions, confidence intervals, sample size calculators, and the peeking problem. Real-world Booking.com case study included.",
+        signal: "Treatment effect significance depends on when you stop the test",
+      },
+      {
+        title: "Analytics Pitfalls",
+        path: "/modules/analytics-pitfalls",
+        badge: "TRAP",
+        badgeVariant: "red" as const,
+        desc: "Four classic traps that fool even experienced analysts: Simpson's Paradox, Survivorship Bias, Novelty Effects, and Goodhart's Law — each illustrated with SQL queries on this dataset.",
+        signal: "Aggregate metrics hide segment-level reversals (Simpson's Paradox)",
+      },
+    ],
+  },
 ];
 
 export default function HomePage() {

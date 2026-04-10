@@ -15,7 +15,7 @@ const PRESETS = [
   { label: "Friction Wall",   latencyFactor: 1.0, modelQuality: 0.7,  onboardingFriction: 0.9  },
 ] as const;
 
-export function SimulationController() {
+export function SimulationController({ onOpenPalette }: { onOpenPalette?: () => void }) {
   const { params, setParams, isGenerating, dataVersion } = useSimulation();
   const { ghosts, pinSnapshot, unpinSnapshot } = useGhost();
   const [mobileExpanded, setMobileExpanded] = useState(false);
@@ -145,6 +145,15 @@ export function SimulationController() {
             </button>
           )}
         </div>
+
+        <div className="w-px h-8 bg-g-border shrink-0" />
+        <button
+          onClick={onOpenPalette}
+          className="shrink-0 flex items-center gap-1 px-2 py-1 rounded text-[10px] border border-g-border text-g-dim hover:border-g-purple hover:text-g-purple transition-colors"
+          title="Open command palette (⌘K)"
+        >
+          <span>⌘K</span>
+        </button>
       </div>
 
       {/* ── Mobile bar (< md) ────────────────────────────────────────────────── */}
