@@ -1,19 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Sidebar } from "@/components/layout/sidebar";
 import { SimulationController } from "@/components/layout/simulation-controller";
 import { CommandPalette } from "@/components/layout/command-palette";
 import { useSimulation } from "@/providers/simulation-provider";
 
-function LayoutInner({ children }: { children: React.ReactNode }) {
-  const [sidebarOpen, setSidebarOpen]       = useState(false);
-  const [paletteOpen, setPaletteOpen]       = useState(false);
+// Isolated component so useSearchParams() is inside a Suspense boundary,
+// which is required for Next.js static prerendering (fixes Vercel build error).
+function ParamReader() {
   const { setParams } = useSimulation();
   const searchParams = useSearchParams();
 
-  // Read URL params on mount and apply them to simulation
   useEffect(() => {
     const l = searchParams.get("l");
     const q = searchParams.get("q");
@@ -27,6 +26,13 @@ function LayoutInner({ children }: { children: React.ReactNode }) {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  return null;
+}
+
+function LayoutInner({ children }: { children: React.ReactNode }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
 
   // Global ⌘K / Ctrl+K keyboard shortcut
   useEffect(() => {
@@ -42,6 +48,11 @@ function LayoutInner({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex flex-col h-full">
+      {/* Read URL params — must be inside Suspense for Next.js static prerendering */}
+      <Suspense fallback={null}>
+        <ParamReader />
+      </Suspense>
+
       {/* Mobile header bar — hidden on md+ */}
       <header className="flex md:hidden items-center justify-between px-3 border-b border-g-border bg-g-surface shrink-0 h-12 z-30">
         <button
