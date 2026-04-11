@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import * as Plot from "@observablehq/plot";
 import { TerminalCard } from "@/components/terminal/terminal-card";
+import { CrossModuleCard } from "@/components/terminal/cross-module-card";
 import { CodeEditor } from "@/components/ui/code-editor";
 import { Badge } from "@/components/ui/badge";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -479,6 +480,12 @@ export default function AnalyticsPitfallsPage() {
               </TerminalCard>
             </>
           )}
+
+        <CrossModuleCard links={[
+          { module: "A/B Testing", path: "/modules/ab-testing", insight: "Simpson's Paradox can invalidate A/B results — always segment your experiment results." },
+          { module: "Metric Trees", path: "/modules/metric-trees", insight: "Goodhart's Law warns against over-optimizing a single node — the tree shows what else you'll break." },
+          { module: "Retention Heatmaps", path: "/modules/retention-heatmaps", insight: "Survivorship bias in retention: if you only measure retained users, cohort curves look artificially healthy." },
+        ]} />
 
         </div>
       </div>

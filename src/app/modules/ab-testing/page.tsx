@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { SplitPane } from "@/components/layout/split-pane";
 import { TerminalCard } from "@/components/terminal/terminal-card";
+import { CrossModuleCard } from "@/components/terminal/cross-module-card";
 import { CodeEditor } from "@/components/ui/code-editor";
 import { Badge } from "@/components/ui/badge";
 import { useDuckDB } from "@/providers/duckdb-provider";
@@ -314,6 +315,12 @@ export default function ABTestingPage() {
                 </TerminalCard>
               </>
             )}
+
+            <CrossModuleCard links={[
+              { module: "Metric Trees", path: "/modules/metric-trees", insight: "Use A/B tests to validate metric tree hypotheses — test the red node you found in the tree." },
+              { module: "Analytics Pitfalls", path: "/modules/analytics-pitfalls", insight: "Peeking problem here connects to Simpson's Paradox there — both are ways significance gets corrupted." },
+              { module: "Feature Adoption", path: "/modules/feature-adoption", insight: "A/B test the onboarding to feature adoption — measure whether new flows accelerate the S-curve." },
+            ]} />
 
           </div>
         }

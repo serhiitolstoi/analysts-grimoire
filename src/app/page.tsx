@@ -7,6 +7,7 @@ import { useSimulation } from "@/providers/simulation-provider";
 import { TerminalCard } from "@/components/terminal/terminal-card";
 import { KpiDashboard } from "@/components/viz/kpi-dashboard";
 import { Badge } from "@/components/ui/badge";
+import { ConceptsMap } from "@/components/viz/concepts-map";
 import { fmtNum } from "@/lib/utils/format";
 
 const BOOT_LINES = [
@@ -55,6 +56,14 @@ const MODULES = [
         desc: "MRR trend (Pro + Team stacked), ARPU and estimated LTV by plan tier, and cohort revenue — connecting every behavioral signal to business impact.",
         signal: "Latency crisis → MRR flatline in months 8–12",
       },
+      {
+        title: "Metric Trees",
+        path: "/modules/metric-trees",
+        badge: "NSM",
+        badgeVariant: "tan" as const,
+        desc: "Decompose MRR into a tree of driver metrics: Signups × Onboarding × Activation × Conversion × ARPU. The #1 PM framework for diagnosing what moves your North Star.",
+        signal: "Quality drop propagates: Artifacts → Retention → Paid Users → MRR",
+      },
     ],
   },
   {
@@ -77,6 +86,14 @@ const MODULES = [
         badgeVariant: "purple" as const,
         desc: "Not all sessions are equal. Map duration × event count to discover four behavioral archetypes — from 30-second glances to 45-minute deep work sessions. Bubble size reveals token consumption intensity.",
         signal: "Bimodal clustering reveals two distinct usage patterns",
+      },
+      {
+        title: "Feature Adoption",
+        path: "/modules/feature-adoption",
+        badge: "S-CURVE",
+        badgeVariant: "purple" as const,
+        desc: "How features spread through a user base: S-curves for each feature type, depth-retention analysis, power user segmentation, and time-to-adopt distributions. The bridge from behavior to business.",
+        signal: "Feature depth of 3+ → dramatic retention and LTV uplift",
       },
     ],
   },
@@ -228,6 +245,23 @@ export default function HomePage() {
           <span className="text-[9px] text-g-dim">updates with simulation · hover for definitions</span>
         </div>
         <KpiDashboard />
+      </motion.div>
+
+      {/* Concepts Map */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.08 }}
+        className="mb-6"
+      >
+        <div className="flex items-center gap-3 mb-2">
+          <span className="text-[10px] text-g-dim uppercase tracking-widest">Concepts Map</span>
+          <div className="h-px flex-1 bg-g-border" />
+          <span className="text-[9px] text-g-dim">click a node to navigate &middot; hover to see connections</span>
+        </div>
+        <TerminalCard title="How Modules Connect — Learning Paths" accent="none">
+          <ConceptsMap />
+        </TerminalCard>
       </motion.div>
 
       {/* Module grid */}

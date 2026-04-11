@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { SplitPane } from "@/components/layout/split-pane";
 import { TerminalCard } from "@/components/terminal/terminal-card";
+import { CrossModuleCard } from "@/components/terminal/cross-module-card";
 import { CodeEditor } from "@/components/ui/code-editor";
 import { MatrixGrid } from "@/components/viz/matrix-grid";
 import { Badge } from "@/components/ui/badge";
@@ -232,6 +233,13 @@ export default function TransitionMatricesPage() {
                 </p>
               </div>
             </TerminalCard>
+
+            <CrossModuleCard links={[
+              { module: "Survival Analysis", path: "/modules/survival-analysis", insight: "Markov churn probabilities manifest as steeper survival curve drops in the high-latency stratum." },
+              { module: "Feature Adoption", path: "/modules/feature-adoption", insight: "Markov states (Casual/Active/Power) align with feature depth segments — depth drives state transitions." },
+              { module: "Metric Trees", path: "/modules/metric-trees", insight: "Latency-driven churn elevates the churn rate node in the metric tree, compressing paid user count." },
+            ]} />
+
           </div>
         }
         defaultRatio={0.42}

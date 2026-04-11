@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { SplitPane } from "@/components/layout/split-pane";
 import { TerminalCard } from "@/components/terminal/terminal-card";
+import { CrossModuleCard } from "@/components/terminal/cross-module-card";
 import { CodeEditor } from "@/components/ui/code-editor";
 import { MrrChart, CohortRevenueChart, type MrrRow, type CohortRevenueRow } from "@/components/viz/revenue-chart";
 import { Badge } from "@/components/ui/badge";
@@ -310,6 +311,12 @@ export default function RevenueLtvPage() {
                 </TerminalCard>
               </>
             )}
+
+            <CrossModuleCard links={[
+              { module: "Metric Trees", path: "/modules/metric-trees", insight: "MRR is the root of the metric tree — see how every driver feeds into it." },
+              { module: "Retention Heatmaps", path: "/modules/retention-heatmaps", insight: "Cohort revenue depends on retention — longer tenure = higher LTV." },
+              { module: "Conversion Funnels", path: "/modules/conversion-funnels", insight: "Paid user count driving MRR depends on funnel conversion rates." },
+            ]} />
 
           </div>
         }

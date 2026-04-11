@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { SplitPane } from "@/components/layout/split-pane";
 import { TerminalCard } from "@/components/terminal/terminal-card";
+import { CrossModuleCard } from "@/components/terminal/cross-module-card";
 import { CodeEditor } from "@/components/ui/code-editor";
 import { RetentionHeatmap } from "@/components/viz/heatmap";
 import { Badge } from "@/components/ui/badge";
@@ -397,6 +398,12 @@ export default function RetentionHeatmapsPage() {
                 </TerminalCard>
               </>
             )}
+
+            <CrossModuleCard links={[
+              { module: "Survival Analysis", path: "/modules/survival-analysis", insight: "Cohort heatmaps are the discrete version — survival curves give you the continuous view." },
+              { module: "Metric Trees", path: "/modules/metric-trees", insight: "Week-4 retention is a driver node in the MRR decomposition tree." },
+              { module: "Feature Adoption", path: "/modules/feature-adoption", insight: "Retention by feature depth reveals why some cohorts retain better than others." },
+            ]} />
 
           </div>
         }

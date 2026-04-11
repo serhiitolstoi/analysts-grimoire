@@ -25,6 +25,8 @@ const MODULES = [
   { label: "Transition Matrices", path: "/modules/transition-matrices",  badge: "MARKOV" },
   { label: "Survival Analysis",   path: "/modules/survival-analysis",    badge: "KM"     },
   { label: "Activity Clusters",   path: "/modules/activity-clusters",    badge: "K-M"    },
+  { label: "Metric Trees",        path: "/modules/metric-trees",         badge: "NSM"    },
+  { label: "Feature Adoption",    path: "/modules/feature-adoption",     badge: "S-CURVE"},
   { label: "A/B Testing",         path: "/modules/ab-testing",           badge: "A/B"    },
   { label: "Analytics Pitfalls",  path: "/modules/analytics-pitfalls",   badge: "TRAP"   },
 ];

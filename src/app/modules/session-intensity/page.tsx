@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { SplitPane } from "@/components/layout/split-pane";
 import { TerminalCard } from "@/components/terminal/terminal-card";
+import { CrossModuleCard } from "@/components/terminal/cross-module-card";
 import { CodeEditor } from "@/components/ui/code-editor";
 import { SessionChart } from "@/components/viz/session-chart";
 import { Badge } from "@/components/ui/badge";
@@ -167,6 +168,13 @@ export default function SessionIntensityPage() {
                 </p>
               </div>
             </TerminalCard>
+
+            <CrossModuleCard links={[
+              { module: "Activity Clusters", path: "/modules/activity-clusters", insight: "Session quadrants (Deep Work, Quick Check) map to K-Means clusters — compare the archetypes." },
+              { module: "IAT Distribution", path: "/modules/iat-distribution", insight: "Deep Work users have shorter IAT — intensity and frequency reinforce each other." },
+              { module: "Feature Adoption", path: "/modules/feature-adoption", insight: "Deep Work sessions are dominated by artifact and code users — the power user segment." },
+            ]} />
+
           </div>
         }
       />

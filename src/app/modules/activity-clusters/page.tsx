@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { SplitPane } from "@/components/layout/split-pane";
 import { TerminalCard } from "@/components/terminal/terminal-card";
+import { CrossModuleCard } from "@/components/terminal/cross-module-card";
 import { CodeEditor } from "@/components/ui/code-editor";
 import { ClusterScatter, type ClusterResult } from "@/components/viz/cluster-scatter";
 import { Badge } from "@/components/ui/badge";
@@ -311,6 +312,13 @@ export default function ActivityClustersPage() {
                 </p>
               </div>
             </TerminalCard>
+
+            <CrossModuleCard links={[
+              { module: "Feature Adoption", path: "/modules/feature-adoption", insight: "K-Means clusters align with feature depth segments — compare cluster centroids to power user profiles." },
+              { module: "Session Intensity", path: "/modules/session-intensity", insight: "Cluster archetypes map to session intensity quadrants — Deep Work = creator cluster." },
+              { module: "Metric Trees", path: "/modules/metric-trees", insight: "The 'creator' cluster drives artifact adoption rate — the key behavioral node in the metric tree." },
+            ]} />
+
           </div>
         }
       />

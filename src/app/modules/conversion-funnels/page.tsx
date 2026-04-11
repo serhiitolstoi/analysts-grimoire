@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { SplitPane } from "@/components/layout/split-pane";
 import { TerminalCard } from "@/components/terminal/terminal-card";
+import { CrossModuleCard } from "@/components/terminal/cross-module-card";
 import { CodeEditor } from "@/components/ui/code-editor";
 import { FunnelChart } from "@/components/viz/funnel-chart";
 import { DropoffFunnelChart, type DropoffRow } from "@/components/viz/dropoff-funnel";
@@ -374,6 +375,12 @@ export default function ConversionFunnelsPage() {
                 </TerminalCard>
               </>
             )}
+
+            <CrossModuleCard links={[
+              { module: "Metric Trees", path: "/modules/metric-trees", insight: "Conversion rate is a key node in the MRR decomposition tree." },
+              { module: "Feature Adoption", path: "/modules/feature-adoption", insight: "Funnel drop-offs feed into feature adoption S-curves — who survives to try artifacts?" },
+              { module: "Retention Heatmaps", path: "/modules/retention-heatmaps", insight: "Users who clear the funnel fast retain better — time-to-activation predicts retention." },
+            ]} />
 
           </div>
         }

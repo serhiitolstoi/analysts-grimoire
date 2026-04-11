@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { SplitPane } from "@/components/layout/split-pane";
 import { TerminalCard } from "@/components/terminal/terminal-card";
+import { CrossModuleCard } from "@/components/terminal/cross-module-card";
 import { CodeEditor } from "@/components/ui/code-editor";
 import { EngagementChart, type EngagementRow } from "@/components/viz/engagement-chart";
 import { Badge } from "@/components/ui/badge";
@@ -198,6 +199,12 @@ export default function EngagementTrendsPage() {
                 </p>
               </div>
             </TerminalCard>
+
+            <CrossModuleCard links={[
+              { module: "Metric Trees", path: "/modules/metric-trees", insight: "WAU decomposes into driver metrics — see how each funnel stage feeds the North Star." },
+              { module: "Retention Heatmaps", path: "/modules/retention-heatmaps", insight: "Returning-user ratio here becomes the cohort retention curves there." },
+              { module: "Feature Adoption", path: "/modules/feature-adoption", insight: "Growth accounting (new vs churned) connects to feature depth and power user segments." },
+            ]} />
 
           </div>
         }

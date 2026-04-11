@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { SplitPane } from "@/components/layout/split-pane";
 import { TerminalCard } from "@/components/terminal/terminal-card";
+import { CrossModuleCard } from "@/components/terminal/cross-module-card";
 import { CodeEditor } from "@/components/ui/code-editor";
 import { SurvivalCurve, type KMCurve } from "@/components/viz/survival-curve";
 import { Badge } from "@/components/ui/badge";
@@ -241,6 +242,13 @@ export default function SurvivalAnalysisPage() {
                 </p>
               </div>
             </TerminalCard>
+
+            <CrossModuleCard links={[
+              { module: "Retention Heatmaps", path: "/modules/retention-heatmaps", insight: "Survival curves are the continuous version of cohort heatmaps — same story, different lens." },
+              { module: "Revenue & LTV", path: "/modules/revenue-ltv", insight: "Median survival time directly feeds LTV: ARPU × median months retained = expected LTV." },
+              { module: "Transition Matrices", path: "/modules/transition-matrices", insight: "Markov churn probabilities determine the shape of survival curves for each user state." },
+            ]} />
+
           </div>
         }
       />

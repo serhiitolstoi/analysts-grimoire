@@ -19,6 +19,7 @@ const NAV = [
       { label: "Conversion Funnels", path: "/modules/conversion-funnels", badge: "LAT" },
       { label: "Retention Heatmaps", path: "/modules/retention-heatmaps", badge: "N-DAY" },
       { label: "Revenue & LTV",      path: "/modules/revenue-ltv",        badge: "LTV" },
+      { label: "Metric Trees",       path: "/modules/metric-trees",       badge: "NSM" },
     ],
   },
   {
@@ -28,6 +29,7 @@ const NAV = [
     items: [
       { label: "IAT Distribution",  path: "/modules/iat-distribution",  badge: "EXP" },
       { label: "Session Intensity", path: "/modules/session-intensity", badge: "2D" },
+      { label: "Feature Adoption",  path: "/modules/feature-adoption",  badge: "S-CURVE" },
     ],
   },
   {

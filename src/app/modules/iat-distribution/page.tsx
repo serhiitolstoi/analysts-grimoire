@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { SplitPane } from "@/components/layout/split-pane";
 import { TerminalCard } from "@/components/terminal/terminal-card";
+import { CrossModuleCard } from "@/components/terminal/cross-module-card";
 import { CodeEditor } from "@/components/ui/code-editor";
 import { IATDistributionChart } from "@/components/viz/distribution-chart";
 import { Badge } from "@/components/ui/badge";
@@ -153,6 +154,13 @@ export default function IATDistributionPage() {
                 </p>
               </div>
             </TerminalCard>
+
+            <CrossModuleCard links={[
+              { module: "Retention Heatmaps", path: "/modules/retention-heatmaps", insight: "Shorter IAT from artifact habit = higher cohort retention. IAT is the mechanism behind the heatmap." },
+              { module: "Survival Analysis", path: "/modules/survival-analysis", insight: "The 40% IAT reduction from artifacts shows up as dramatically longer survival curves." },
+              { module: "Feature Adoption", path: "/modules/feature-adoption", insight: "IAT habit loop forms when users reach artifact adoption — see the S-curve inflection point." },
+            ]} />
+
           </div>
         }
       />
